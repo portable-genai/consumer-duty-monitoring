@@ -1,0 +1,8 @@
+{
+  "locals": {
+    "render_region": "asia-southeast1",
+    "render_package_name": "consumer_duty_monitoring",
+    "render_env_prefix": "CONSUMERDUTY",
+    "render_catalog_id": "Rgc15"
+  }
+}

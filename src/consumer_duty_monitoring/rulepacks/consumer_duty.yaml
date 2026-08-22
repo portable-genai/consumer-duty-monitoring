@@ -1,0 +1,55 @@
+# Consumer Duty outcome-test pack (reference).
+#
+# These thresholds are the ADOPTING FIRM's Consumer Duty risk appetite, not the engine's. They
+# are SYNTHETIC reference values for the demo and the offline gate; a real deployment points
+# `outcome_pack_path` (config/settings.yaml) at the firm's own file, reviewed and diffed by a
+# compliance officer on the product review schedule (practice B4). Every family names the
+# regulator instrument it derives from; the loader (outcome_pack.py) refuses a family with no
+# citation and refuses to start on a malformed pack.
+#
+# A family may be OMITTED here on purpose: an omitted family is not a pass, it is a GAP at
+# assessment time (the engine fails closed). The pack that ships configures all four.
+
+version: "consumer-duty-2026.1"
+
+citations:
+  fca_prin2a:
+    title: "FCA PRIN 2A - The Consumer Duty (synthetic adopter thresholds)"
+    snippet: >
+      Firms must act to deliver good outcomes for retail customers across products and services,
+      price and value, consumer understanding and consumer support. Thresholds shown are a
+      synthetic adopter risk appetite for demonstration only.
+  fca_fg22_5:
+    title: "FCA FG22/5 - Vulnerable customers guidance (synthetic adopter thresholds)"
+    snippet: >
+      Firms should respond to customer needs throughout, monitor whether they are meeting the
+      needs of customers with characteristics of vulnerability, and take action where they are not.
+
+families:
+  # A weighted count of complaint, conduct-flag and QA-failure signals per product, at or above
+  # which foreseeable harm is escalated for board review.
+  foreseeable_harm:
+    threshold: 5.0
+    severity: high
+    citation: fca_prin2a
+
+  # The fraction of a product's signals coming from cohorts outside its approved target market,
+  # at or above which distribution has drifted far enough to review.
+  target_market_drift:
+    threshold: 0.25
+    severity: high
+    citation: fca_prin2a
+
+  # The robust z-score of a product's fee-per-unit-of-value against the product set. At or above
+  # this, the product is materially more expensive for what it delivers than its peers.
+  price_vs_value:
+    threshold: 3.0
+    severity: medium
+    citation: fca_prin2a
+
+  # The count of vulnerable subjects contacted against a recorded preference. One is enough to
+  # escalate: contacting a vulnerable customer against their preference is a good-outcomes failure.
+  vulnerable_customer:
+    threshold: 1.0
+    severity: critical
+    citation: fca_fg22_5

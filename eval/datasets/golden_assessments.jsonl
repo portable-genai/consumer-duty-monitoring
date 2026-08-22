@@ -1,0 +1,12 @@
+# Golden Consumer Duty assessments (obviously fictional). The oracle is INDEPENDENT of the
+# pipeline: each row's expected verdicts were written by reasoning about the seeded synthetic
+# signals and products (adapters/local/_seed.py), never read back from the engine. Fields:
+#   tenant                        - the seeded tenant to assess
+#   expected_breaches             - the test_ids (family:product) that MUST breach; every other
+#                                   (family, product) pair must PASS
+#   expected_requires_human_review- whether the whole assessment must escalate and route (R8)
+#   planted                       - a raw identifier planted in a signal citation, which the
+#                                   redact-before-audit step must mask (pii_safety)
+{"tenant": "demo-bank", "expected_breaches": ["foreseeable_harm:P-PKG-04", "target_market_drift:P-INV-03", "price_vs_value:P-LOAN-02", "vulnerable_customer:P-SAVE-01"], "expected_requires_human_review": true, "planted": null}
+{"tenant": "clean-bank", "expected_breaches": [], "expected_requires_human_review": false, "planted": null}
+{"tenant": "pii-bank", "expected_breaches": ["foreseeable_harm:P-PKG-04", "target_market_drift:P-INV-03", "price_vs_value:P-LOAN-02", "vulnerable_customer:P-SAVE-01"], "expected_requires_human_review": true, "planted": "S1234567D"}
