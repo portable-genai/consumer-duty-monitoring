@@ -84,11 +84,12 @@ never earlier.
 
 ### Does the gate run for my fork out of the box?
 
-Yes, with one caveat. `make gate` is offline, credential-free and network-free (ruff, ruff
-format, mypy strict, the whole suite except integration, and the eval), and the CI workflow
-references no `secrets.`, so a fork's build is green immediately. The caveat is dependency
-resolution rather than the gate: `consent-preference-kit` is a private commons, so recreating the
-locked environment needs a credential for it. Note the eval measures the REFERENCE outcome pack
+Yes. `make gate` is offline, credential-free and network-free (ruff, ruff format, mypy strict,
+the whole suite except integration, and the eval), and the CI workflow references no `secrets.`,
+so a fork's build is green immediately. This answer used to carry a caveat about dependency
+resolution rather than the gate, because `consent-preference-kit` was a private commons and
+recreating the locked environment needed a credential for it; the kit has been public in
+`portable-genai` since 2026-08-22, so that caveat is gone. Note the eval measures the REFERENCE outcome pack
 and golden set until you rebuild them for your own framework; that is an explicit adoption step,
 not a silent pass.
 
