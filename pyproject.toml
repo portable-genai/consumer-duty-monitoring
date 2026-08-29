@@ -24,7 +24,7 @@ authors = [{ name = "Ashish Awasthi" }]
 # adapter. It is a pure-stdlib leaf commons with no runtime deps of its own.
 dependencies = [
   "pii-kit @ git+https://github.com/portable-genai/pii-kit@v0.0.1",
-  "hex-service-kit[fastapi] @ git+https://github.com/portable-genai/hex-service-kit@v0.0.5",
+  "hex-service-kit[fastapi] @ git+https://github.com/portable-genai/hex-service-kit@v0.0.6",
   "agent-eval-kit @ git+https://github.com/portable-genai/agent-eval-kit@v0.0.1",
   "review-kit @ git+https://github.com/portable-genai/review-kit@v0.0.1",
   "consent-preference-kit @ git+https://github.com/portable-genai/consent-preference-kit@v0.0.1",
