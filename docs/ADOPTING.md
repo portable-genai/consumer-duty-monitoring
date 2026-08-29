@@ -164,7 +164,7 @@ already thin clients to them:
   arrival as configuration, not as an engine change.
 - **Hrz7** human-review / maker-checker console: every consequential assessment is routed to it
   over the shared `review-kit` (rule R8); you wire your endpoint
-  (`HRZ_HUMAN_REVIEW_URL`), you do not re-implement the console.
+  (`HUMAN_REVIEW_URL`), you do not re-implement the console.
 - **Hrz4** AI-quality / model-risk gate: owns promotion. `eval/run_eval.py --mode gate` is the
   client half (`CONSUMERDUTY_QUALITY_URL`) and refuses to run off the managed profile.
 - **Hrz5** observability plus immutable WORM audit: audit events and trace spans go to it via

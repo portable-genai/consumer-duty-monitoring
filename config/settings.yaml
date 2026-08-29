@@ -41,9 +41,9 @@ iap_audience: ${CONSUMERDUTY_IAP_AUDIENCE:-}
 
 # Rule R8: where an escalated result is routed for human review. The managed profile REFUSES to
 # swallow an escalation when this is empty, so a producer cannot ship with R8 unwired.
-# The outbound S2S credentials are HRZ7_S2S_TOKEN / HRZ7_S2S_SIGNING_KEY (see .env.secrets.example),
+# The outbound S2S credentials are HUMAN_REVIEW_S2S_TOKEN / HUMAN_REVIEW_S2S_SIGNING_KEY (see .env.secrets.example),
 # deliberately distinct from this service's own inbound CONSUMERDUTY_S2S_TOKEN.
-review_url: ${HRZ_HUMAN_REVIEW_URL:-}
+review_url: ${HUMAN_REVIEW_URL:-}
 
 # The outcome-test pack: the firm's Consumer Duty thresholds, as YAML a compliance officer can
 # diff. Empty selects the shipped synthetic reference pack (rulepacks/consumer_duty.yaml).
