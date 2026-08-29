@@ -77,7 +77,7 @@ still produce correct assessments and would silently stop honouring rule R8.
 | Conversation QA scoring | **E3** conversation QA and compliance scorecard | consumed as normalised signals. |
 | Next-best-action outcomes | **Mkt5** next-best-action | consumed as normalised signals. |
 | Complaints intake | **F2** disputes and chargebacks | DECLARED in the taxonomy (`SignalSource.INTAKE`) and exercised from a fixture; not built. Its adapter registers on arrival as configuration, not as an engine change. |
-| Human review and maker-checker | **Hrz7** human review console | `ReviewRouterPort` over the shared `review-kit` (`HRZ_HUMAN_REVIEW_URL`). This repo produces escalations; it does not render a queue. |
+| Human review and maker-checker | **Hrz7** human review console | `ReviewRouterPort` over the shared `review-kit` (`HUMAN_REVIEW_URL`). This repo produces escalations; it does not render a queue. |
 | Model and agent promotion | **Hrz4** AI quality and model risk | `eval/run_eval.py --mode gate` asks Hrz4 (`CONSUMERDUTY_QUALITY_URL`); the offline smoke mode never promotes. |
 | Traces and the immutable audit sink | **Hrz5** agent observability | `AuditSinkPort` and `ObservabilityTracerPort`; `OTEL_EXPORTER_OTLP_ENDPOINT` selects the Hrz5 collector. |
 | Agent discovery and entitlements | **Hrz3** agent registry | this agent publishes a card; the registry owns discovery. |
