@@ -7,7 +7,7 @@ here. Read it first. This file carries only what is specific to this one.
 
 ## What this is
 
-Consumer Duty Monitoring (Rgc15): Deterministic Consumer Duty outcome-testing and board-facing fair-value monitoring.
+Consumer Duty Monitoring (`consumer-duty-monitoring`): Deterministic Consumer Duty outcome-testing and board-facing fair-value monitoring.
 Rendered from `hex-service-template`, so it starts at reference parity rather than converging
 toward it. Package `consumer_duty_monitoring`, environment prefix
 `CONSUMERDUTY`, region `asia-southeast1`.

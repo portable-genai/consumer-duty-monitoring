@@ -1,7 +1,8 @@
 """AssessmentStorePort: the tenant-scoped store of produced outcome assessments.
 
 A Consumer Duty assessment is tenant-owned data with a regulator's interest attached, so the two
-read methods differ DELIBERATELY, exactly as Mkt6's evidence store and E3's scorecard store do:
+read methods differ DELIBERATELY, exactly as marketing-compliance-gate's evidence store and E3's
+scorecard store do:
 
 * :meth:`list_for_product` takes the tenant and MUST filter on it in the store, so a query can
   never span tenants even when a caller passes another tenant's product id, and

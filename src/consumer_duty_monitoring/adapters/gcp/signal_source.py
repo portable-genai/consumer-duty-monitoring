@@ -1,9 +1,9 @@
 """Managed SignalSourcePort: BigQuery plus the sibling services (SDK imports stay lazy).
 
-Reads normalised outcome signals from the residency-region warehouse the sibling systems land
-their outputs in (Doc6 complaint categorisations and conduct flags, E3 scorecards, Mkt5
-next-best-action outcomes, and F2 intake once built). The ``google.cloud`` import is lazy, so the
-offline profiles import this module with no cloud SDK present; offline it refuses at call time
+Reads normalised outcome signals from the residency-region warehouse the sibling systems land their
+outputs in (complaints-review complaint categorisations and conduct flags, E3 scorecards, next-best-
+action next-best-action outcomes, and F2 intake once built). The ``google.cloud`` import is lazy, so
+the offline profiles import this module with no cloud SDK present; offline it refuses at call time
 rather than pretending, because a monitor that silently read no signals would report a clean book.
 """
 

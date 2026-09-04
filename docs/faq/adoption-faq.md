@@ -11,7 +11,7 @@ console script, so the `assess` command is renamed with it), the `CONSUMERDUTY_`
 (including the bare token that `infra/terraform/render.tf.json` carries, so Terraform sets the
 same variable names on the service), the Terraform `name_prefix` resource stem (`rgc15-svc`) and
 the distribution / git id in one pass. Preview with `--dry-run`, apply with `--yes`, then recreate
-the venv, `make install`, and run `make gate`. The catalog id `Rgc15` is left alone unless you
+the venv, `make install`, and run `make gate`. The catalog id `consumer-duty-monitoring` is left alone unless you
 pass `--catalog-id`, so a fork stays traceable to the entry it descends from. The script does the
 mechanical rename; the human decisions (the outcome pack, the signal feeds, region, IdP, eval
 golden set) are the checklist in `ADOPTING.md`.
@@ -36,18 +36,18 @@ Four things, and none of them is code here:
    owns them. Point `CONSUMERDUTY_OUTCOME_PACK` at your own file rather than editing the
    reference.
 2. **The signal feeds.** `SignalSourcePort` is feed-agnostic on purpose. Offline it serves
-   synthetic fixtures for the three built sources (Doc6 complaints and conduct flags, E3
-   conversation-QA scorecards, Mkt5 next-best-action outcomes) plus a declared F2 intake fixture.
+   synthetic fixtures for the three built sources (`complaints-review` complaints and conduct flags, E3
+   conversation-QA scorecards, `next-best-action` next-best-action outcomes) plus a declared F2 intake fixture.
    Registering a new feed is a new adapter behind the unchanged port, not an engine change.
 3. **The product governance records.** `ProductGovernancePort` supplies the product packs,
    approved target markets, fees and benefit scores the tests measure against. The engine never
    learns a product name or a fee as a constant.
-4. **The consent and preference store.** An Mkt6 deployment reachable at
+4. **The consent and preference store.** An `marketing-compliance-gate` deployment reachable at
    `CONSUMERDUTY_CONSENT_URL`. The managed lookup REFUSES when this is empty rather than
    defaulting to an allow, and the kit synthesises a DENIED decision when the store is
    unreachable, so an unavailable consent state never reads as permission.
 
-Plus the review console: an Hrz7 deployment at `HUMAN_REVIEW_URL`. The managed router REFUSES
+Plus the review console: an `human-review-console` deployment at `HUMAN_REVIEW_URL`. The managed router REFUSES
 to swallow an escalation when this is empty, so a fork cannot ship rule R8 unwired and green.
 
 ### How do I add a new outbound dependency (a new port)?
@@ -116,8 +116,7 @@ properties when you rebuild the set for your own framework, or the score stops b
 
 [`../practices-audit.md`](../practices-audit.md) carries the per-check verdict and the work list.
 The three that matter most before production: implementing the managed feed, store and narration
-adapters (nothing deploys until `managed_readiness.py` is empty), binding the Hrz1 guardrail
-gateway (needed before untrusted complaint narrative reaches a narrator), and registering this
-repo's metric bundle with Hrz4 so `eval/run_eval.py --mode gate` has an authority to ask. The
+adapters (nothing deploys until `managed_readiness.py` is empty), binding the `agent-guardrail-gateway` (needed before untrusted complaint narrative reaches a narrator), and registering this
+repo's metric bundle with `model-quality-gate` so `eval/run_eval.py --mode gate` has an authority to ask. The
 Terraform stack is written, validated and tested against a mocked provider; it has never been
 applied.

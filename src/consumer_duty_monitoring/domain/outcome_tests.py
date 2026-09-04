@@ -10,15 +10,14 @@ restate them.
 Four tests, each a small pure kernel:
 
 * **foreseeable harm** : a weighted count of complaint, conduct-flag and QA-failure signals per
-  product, compared to the pack's harm threshold.
-* **target-market drift** : the fraction of a product's signals whose cohort is outside the
-  product's approved target market.
-* **price vs value** : the product's fee-per-unit-of-value, expressed as a robust z-score
-  (median / MAD, resistant to the outliers in the very set it screens, the same maths Mkt4's
-  anomaly service uses) across the product set, so an expensive-for-what-it-delivers product
-  stands out from its peers rather than from an absolute number nobody agreed.
-* **vulnerable customer** : the count of vulnerable subjects who were contacted against a
-  recorded preference (the consent context, resolved read-only through the consent kit).
+  product, compared to the pack's harm threshold. * **target-market drift** : the fraction of a
+  product's signals whose cohort is outside the product's approved target market. * **price vs
+  value** : the product's fee-per-unit-of-value, expressed as a robust z-score (median / MAD,
+  resistant to the outliers in the very set it screens, the same maths performance-marketing-
+  optimisation's anomaly service uses) across the product set, so an expensive-for-what-it-delivers
+  product stands out from its peers rather than from an absolute number nobody agreed. *
+  **vulnerable customer** : the count of vulnerable subjects who were contacted against a recorded
+  preference (the consent context, resolved read-only through the consent kit).
 
 Determinism: same inputs and same ``as_of`` produce byte-identical results. No clock read inside
 a method, no randomness, no I/O, no model. Fail-closed: a family the pack does not configure is a
@@ -237,7 +236,8 @@ class OutcomeTestEngine:
         )
 
     # ------------------------------------------------------------------ #
-    # Robust statistics (stdlib only), mirroring Mkt4's anomaly service
+    # Robust statistics (stdlib only), mirroring performance-marketing-optimisation's anomaly
+    # service
     # ------------------------------------------------------------------ #
     @staticmethod
     def _median(values: list[float]) -> float:

@@ -13,11 +13,11 @@ audience; skim the one that matches your role.
 | [compliance-faq.md](compliance-faq.md) | Compliance / model risk / second line | Consumer Duty posture, maker-checker, residency, retention, model-risk evidence |
 
 These FAQs deliberately do **not** re-document capabilities owned by sibling systems in the GRC
-catalog. Where a concern belongs to another repo (the consent and preference store inside Mkt6,
-the complaint and conduct feed Doc6, the conversation-QA feed E3, the next-best-action feed Mkt5,
-the not-yet-built intake feed F2, the human-review console Hrz7, the eval platform Hrz4, the
-observability and WORM sink Hrz5, the agent registry Hrz3, the guardrail gateway Hrz1 and the
-enterprise knowledge base Hrz2), the FAQ points at it and explains the boundary rather than
+catalog. Where a concern belongs to another repo (the consent and preference store inside `marketing-compliance-gate`,
+the complaint and conduct feed `complaints-review`, the conversation-QA feed E3, the next-best-action feed `next-best-action`,
+the not-yet-built intake feed F2, the human-review console `human-review-console`, the eval platform `model-quality-gate`, the
+observability and WORM sink `agent-observability`, the agent registry `agent-registry`, the guardrail gateway `agent-guardrail-gateway` and the
+enterprise knowledge base `enterprise-knowledge-base`), the FAQ points at it and explains the boundary rather than
 duplicating it. See [features-faq.md](features-faq.md) for the full "what this repo owns vs what
 it integrates" map.
 

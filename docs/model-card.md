@@ -1,4 +1,4 @@
-# Model card: Consumer Duty Monitoring (Rgc15)
+# Model card: Consumer Duty Monitoring (`consumer-duty-monitoring`)
 
 **No model runs in this system today, on any profile.** The narration seam exists, is bound in
 all three profiles and is fully constrained, but nothing behind it calls a model: the offline
@@ -71,10 +71,10 @@ assessment emitted. Both are proved able to go red in `tests/unit/test_eval_metr
   request rate limit, and no switch that forces deterministic-only operation. The fallback path
   already exists and is exercised, but nothing yet lets an operator disable a bound narrator
   deliberately.
-- **Evaluation of the live model**: add a managed-profile run, registered with the Hrz4 promotion
+- **Evaluation of the live model**: add a managed-profile run, registered with the `model-quality-gate` promotion
   gate (P-08, rule R5), that scores `narration_groundedness` against the same golden set with the
   real model bound. The offline score measures the gate, not a model.
-- **Prompt-injection screening** (rule R1): the Hrz1 guardrail gateway is not bound. The brief is
+- **Prompt-injection screening** (rule R1): the `agent-guardrail-gateway` is not bound. The brief is
   already narrow (counts, verdicts and instrument ids only), which is the strongest single
   defence here, but any future change that widened it to carry verbatim complaint text would make
   screening mandatory before `narration_brief` is built, failing closed to deterministic-only

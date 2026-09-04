@@ -24,9 +24,6 @@ Two notes specific to this repo:
   ``infra/terraform/render.tf.json`` so the Terraform stack can set the same variable names on
   the Cloud Run service. Both are rewritten.
 
-The catalog id (``Rgc15``) is left alone unless ``--catalog-id`` is given: it names the entry in
-the upstream catalog that this fork descends from, and a fork that keeps it stays traceable.
-Change it when the fork publishes its own agent card to its own registry.
 
 After running: recreate the venv and ``pip install -e ".[dev]"`` (the distribution name
 changed), then run the gate. See docs/ADOPTING.md for the checklist of human decisions (the
@@ -50,7 +47,6 @@ _OLD_ENV_PREFIX = "CONSUMERDUTY_"
 _OLD_BARE_PREFIX = "CONSUMERDUTY"
 _OLD_RESOURCE = "rgc15-svc"
 _OLD_DIST = "consumer-duty-monitoring"
-_OLD_CATALOG_ID = "Rgc15"
 
 # Directories never touched.
 _SKIP_DIRS = {
@@ -117,12 +113,12 @@ def _iter_files(include_docs: bool):
 def _rewrite_text(text: str, args: argparse.Namespace) -> tuple[str, int]:
     """Apply every rename to ``text``; return the new text and the number of replacements.
 
-    Order matters. The distribution id (``consumer-duty-monitoring``) is the longest and most
+    Order matters. The distribution id (`consumer-duty-monitoring`) is the longest and most
     specific string, so it goes first; the resource stem and the package name share no substring
     with it (two are hyphenated, one is not), but replacing the longest first keeps that
     independence from being an accident. The resource stem also goes before the catalog id, so
     the lowercase ``rgc15`` inside ``rgc15-svc`` is consumed by the stem rewrite rather than left
-    for a case-sensitive ``Rgc15`` match that would never fire on it.
+    for a case-sensitive `consumer-duty-monitoring` match that would never fire on it.
     """
     count = 0
     env_prefix = args.env_prefix.rstrip("_").upper()
@@ -132,8 +128,6 @@ def _rewrite_text(text: str, args: argparse.Namespace) -> tuple[str, int]:
         (_OLD_RESOURCE, args.resource),
         (_OLD_PACKAGE, args.package),
     ]
-    if args.catalog_id:
-        plain.append((_OLD_CATALOG_ID, args.catalog_id))
     for old, new in plain:
         count += text.count(old)
         text = text.replace(old, new)
@@ -165,11 +159,6 @@ def main() -> int:
         help="new cloud resource stem (Terraform name_prefix), e.g. acme-duty",
     )
     ap.add_argument("--dist", default="", help="new distribution / git id (default: --resource)")
-    ap.add_argument(
-        "--catalog-id",
-        default="",
-        help=f"new catalog id (default: keep {_OLD_CATALOG_ID}, so the fork stays traceable)",
-    )
     ap.add_argument("--include-docs", action="store_true", help="also rewrite Markdown prose")
     ap.add_argument("--dry-run", action="store_true", help="print the plan, write nothing")
     ap.add_argument("--yes", action="store_true", help="apply without the confirmation prompt")
@@ -196,10 +185,6 @@ def main() -> int:
     print(
         f"  {_OLD_ENV_PREFIX!r:32} -> {args.env_prefix.rstrip('_').upper() + '_'!r}   (env prefix)"
     )
-    if args.catalog_id:
-        print(f"  {_OLD_CATALOG_ID!r:32} -> {args.catalog_id!r}   (catalog id)")
-    else:
-        print(f"  {_OLD_CATALOG_ID!r:32} -> unchanged (pass --catalog-id to rewrite it)")
     print()
 
     touched: list[tuple[Path, int]] = []

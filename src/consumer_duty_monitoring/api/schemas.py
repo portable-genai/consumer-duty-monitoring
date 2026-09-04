@@ -64,8 +64,8 @@ class AssessmentResponse(BaseModel):
     product_count: int
     breach_count: int
     gap_count: int
-    #: Where the escalation WENT (rule R8): the Hrz7 review id, or the local queue reference.
-    #: Empty only when the assessment did not escalate.
+    #: Where the escalation WENT (rule R8): the human-review-console review id, or the local queue
+    #: reference. Empty only when the assessment did not escalate.
     review_ref: str = ""
     results: list[OutcomeTestModel] = []
     themes: list[ThemeModel] = []

@@ -56,7 +56,7 @@ The narrator (bind your in-country model gateway, or run with the deterministic 
 model at all, which changes no figure), the identity adapter (your IdP rather than IAP), the
 audit sink (your WORM store), the signal source and product governance adapters (your systems of
 record), the assessment store, the warehouse export (your analytics platform) and the review
-router (your maker-checker queue). The consent lookup points at whatever the Mkt6 store becomes
+router (your maker-checker queue). The consent lookup points at whatever the `marketing-compliance-gate` store becomes
 in your estate, and stays read-only and fail-closed either way. The evaluation port is the one
 that deliberately REFUSES to promote off the managed profile: a promotion certified by a laptop
 with no quality service is certified by nothing.

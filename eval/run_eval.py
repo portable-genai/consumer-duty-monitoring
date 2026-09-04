@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Evaluation gate for Consumer Duty Monitoring (Rgc15).
+"""Evaluation gate for Consumer Duty Monitoring (consumer-duty-monitoring).
 
 Two named layers via ``--mode`` (the scaffold is ``agent_eval_kit.eval_main``):
 
 * **smoke** (default) - the offline pre-merge check CI runs on every change: it drives the real
   assessment pipeline (signal intake, product governance, the deterministic outcome-test engine,
   theme synthesis, the narration grounding gate and rule-R8 routing) against an independently
-  labelled golden set with SDK-free local adapters, and scores six metrics.
-* **gate** - the promotion verdict from the shared Hrz4 authority (requires the ``gcp`` profile),
-  via ``agent_eval_kit.PromotionGateClient``.
+  labelled golden set with SDK-free local adapters, and scores six metrics. * **gate** - the
+  promotion verdict from the shared model-quality-gate authority (requires the ``gcp`` profile), via
+  ``agent_eval_kit.PromotionGateClient``.
 
 Exit is ``0`` iff every metric meets its threshold (and, in gate mode, the authority agrees).
 
@@ -84,7 +84,8 @@ THRESHOLDS: dict[str, float] = {
     "review_safety": 1.0,
     "pii_safety": 0.99,
 }
-#: The registered Hrz4 metric bundle for this vertical (Hrz4 owns the metrics + thresholds).
+#: The registered model-quality-gate metric bundle for this vertical (model-quality-gate owns the
+#: metrics + thresholds).
 _BUNDLE = "consumer-duty-monitoring"
 
 _QUALITY_URL_ENV = "CONSUMERDUTY_QUALITY_URL"
@@ -328,7 +329,7 @@ def run_gate(dataset: Path) -> tuple[EvalReport, bool]:
     if quality.is_configured_empty:
         raise SystemExit(
             f"{_QUALITY_URL_ENV} is set to an empty value, which names no authority. "
-            "Unset it to use the default, or point it at the Hrz4 quality service."
+            "Unset it to use the default, or point it at the model-quality-gate quality service."
         )
     client = PromotionGateClient(
         quality.value if quality.has_value else _DEFAULT_QUALITY_URL,
@@ -344,6 +345,6 @@ if __name__ == "__main__":
             smoke=run_smoke,
             gate=run_gate,
             default_dataset=DEFAULT_DATASET,
-            description="Offline / Hrz4 evaluation gate for Rgc15.",
+            description="Offline / model-quality-gate for consumer-duty-monitoring.",
         )
     )

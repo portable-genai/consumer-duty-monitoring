@@ -1,4 +1,5 @@
-"""Rule R8: an escalated assessment is ROUTED to Hrz7, not left in a per-repo boolean.
+"""Rule R8: an escalated assessment is ROUTED to human-review-console, not left in a per-repo
+boolean.
 
 This is the standing gate for the failure the rule exists to prevent. A repo can set
 ``requires_human_review = True``, pass every other test, and still auto-execute in practice
@@ -129,10 +130,12 @@ def test_the_payload_masks_a_raw_identifier_in_a_citation() -> None:
 
 
 def test_the_full_service_path_never_routes_a_raw_identifier() -> None:
-    """End to end over the pii tenant: no raw identifier reaches the Hrz7 wire, redacted or capped.
+    """End to end over the pii tenant: no raw identifier reaches the human-review-console wire,
+    redacted or capped.
 
-    The complement to the mask test above: that one proves the redactor masks; this one proves the
-    whole real path (dedup, cap, submit) emits nothing, over the seed that actually plants an id.
+    The complement to the mask test above: that one proves the redactor masks; this one proves
+    the whole real path (dedup, cap, submit) emits nothing, over the seed that actually plants
+    an id.
     """
     assessment, container = _assess_through_service(PII_TENANT)
     assert any(sample_cases.PLANTED_NRIC in c.snippet for c in assessment.citations), (

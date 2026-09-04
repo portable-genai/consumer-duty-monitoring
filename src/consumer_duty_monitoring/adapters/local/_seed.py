@@ -96,7 +96,9 @@ _SIGNALS: tuple[OutcomeSignal, ...] = (
         subject_id=VULNERABLE_SUBJECT,
         channel="sms",
         observed_date="2026-06-03",
-        citation=_c("mkt5:nba:001", "Mkt5 next-best-action outcome", "contacted on sms"),
+        citation=_c(
+            "mkt5:nba:001", "next-best-action next-best-action outcome", "contacted on sms"
+        ),
     ),
     # P-LOAN-02: expensive for what it delivers (price-vs-value breach), plus an F2 intake signal.
     OutcomeSignal(
@@ -108,7 +110,9 @@ _SIGNALS: tuple[OutcomeSignal, ...] = (
         cohort="mass_market",
         observed_date="2026-06-05",
         citation=_c(
-            "doc6:complaint:010", "Doc6 complaint categorisation", "category: fees_charges"
+            "doc6:complaint:010",
+            "complaints-review complaint categorisation",
+            "category: fees_charges",
         ),
     ),
     OutcomeSignal(
@@ -130,7 +134,11 @@ _SIGNALS: tuple[OutcomeSignal, ...] = (
         product_id="P-INV-03",
         cohort="mass_market",
         observed_date="2026-06-07",
-        citation=_c("doc6:complaint:020", "Doc6 complaint categorisation", "category: mis_selling"),
+        citation=_c(
+            "doc6:complaint:020",
+            "complaints-review complaint categorisation",
+            "category: mis_selling",
+        ),
     ),
     OutcomeSignal(
         signal_id="e3-scr-020",
@@ -152,7 +160,9 @@ _SIGNALS: tuple[OutcomeSignal, ...] = (
         subject_id=CONSENTED_SUBJECT,
         channel="email",
         observed_date="2026-06-09",
-        citation=_c("mkt5:nba:020", "Mkt5 next-best-action outcome", "contacted on email"),
+        citation=_c(
+            "mkt5:nba:020", "next-best-action next-best-action outcome", "contacted on email"
+        ),
     ),
     # P-PKG-04: high complaint and conduct-flag volume (foreseeable-harm breach).
     OutcomeSignal(
@@ -163,7 +173,9 @@ _SIGNALS: tuple[OutcomeSignal, ...] = (
         product_id="P-PKG-04",
         cohort="mass_market",
         observed_date="2026-06-10",
-        citation=_c("doc6:complaint:030", "Doc6 complaint categorisation", "category: service"),
+        citation=_c(
+            "doc6:complaint:030", "complaints-review complaint categorisation", "category: service"
+        ),
     ),
     OutcomeSignal(
         signal_id="doc6-cmp-031",
@@ -173,7 +185,9 @@ _SIGNALS: tuple[OutcomeSignal, ...] = (
         product_id="P-PKG-04",
         cohort="mass_market",
         observed_date="2026-06-11",
-        citation=_c("doc6:complaint:031", "Doc6 complaint categorisation", "category: service"),
+        citation=_c(
+            "doc6:complaint:031", "complaints-review complaint categorisation", "category: service"
+        ),
     ),
     OutcomeSignal(
         signal_id="doc6-cmp-032",
@@ -184,7 +198,9 @@ _SIGNALS: tuple[OutcomeSignal, ...] = (
         cohort="mass_market",
         observed_date="2026-06-12",
         citation=_c(
-            "doc6:complaint:032", "Doc6 complaint categorisation", "category: fees_charges"
+            "doc6:complaint:032",
+            "complaints-review complaint categorisation",
+            "category: fees_charges",
         ),
     ),
     OutcomeSignal(
@@ -195,7 +211,7 @@ _SIGNALS: tuple[OutcomeSignal, ...] = (
         product_id="P-PKG-04",
         cohort="mass_market",
         observed_date="2026-06-12",
-        citation=_c("doc6:conduct:030", "Doc6 conduct flag", "systemic_issue"),
+        citation=_c("doc6:conduct:030", "complaints-review conduct flag", "systemic_issue"),
     ),
     OutcomeSignal(
         signal_id="doc6-flag-031",
@@ -205,7 +221,7 @@ _SIGNALS: tuple[OutcomeSignal, ...] = (
         product_id="P-PKG-04",
         cohort="mass_market",
         observed_date="2026-06-13",
-        citation=_c("doc6:conduct:031", "Doc6 conduct flag", "regulatory_breach"),
+        citation=_c("doc6:conduct:031", "complaints-review conduct flag", "regulatory_breach"),
     ),
 )
 
@@ -250,7 +266,9 @@ _CLEAN_SIGNALS: tuple[OutcomeSignal, ...] = (
         product_id="C-SAVE-01",
         cohort="mass_market",
         observed_date="2026-06-04",
-        citation=_c("doc6:complaint:900", "Doc6 complaint categorisation", "category: service"),
+        citation=_c(
+            "doc6:complaint:900", "complaints-review complaint categorisation", "category: service"
+        ),
     ),
     OutcomeSignal(
         signal_id="clean-cmp-002",
@@ -260,7 +278,9 @@ _CLEAN_SIGNALS: tuple[OutcomeSignal, ...] = (
         product_id="C-CARD-02",
         cohort="mass_market",
         observed_date="2026-06-05",
-        citation=_c("doc6:complaint:901", "Doc6 complaint categorisation", "category: service"),
+        citation=_c(
+            "doc6:complaint:901", "complaints-review complaint categorisation", "category: service"
+        ),
     ),
 )
 

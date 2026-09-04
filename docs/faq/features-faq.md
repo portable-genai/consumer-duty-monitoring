@@ -24,7 +24,7 @@ narrated one:
    into one theme per family, with the breach count, the products implicated and the signal ids
    behind them all counted in pure stdlib. A board reads themes, not a hundred rows.
 4. **Routing and record**: a consequential assessment sets `requires_human_review` and is routed
-   to Hrz7 in the same call, redacted before the audit write, stored, and exported as a flat row.
+   to `human-review-console` in the same call, redacted before the audit write, stored, and exported as a flat row.
 5. **Narration** (`domain/narration.py` plus `NarrationPort`): a paragraph a board can read. It
    computes nothing.
 
@@ -71,18 +71,18 @@ still produce correct assessments and would silently stop honouring rule R8.
 
 | Concern | Owner | How this repo touches it |
 |---|---|---|
-| The four outcome tests, the theme counting and the assessment record | **Rgc15 (this repo)** | owned outright: `domain/outcome_tests.py`, `domain/theme_synthesis.py`, `domain/models.py`. |
-| Consent, channel preferences and the decision authority over them | **Mkt6** marketing and claims compliance gate (hosts the consent and preference store) | READ-ONLY over `ConsentLookupPort` through the shared `consent-preference-kit` (`CONSUMERDUTY_CONSENT_URL`). This repo never records a send and never writes consent. |
-| Complaint categorisation and conduct flags | **Doc6** complaints and conduct file review | consumed as normalised `OutcomeSignal`s. Its deterministic-counting-is-authoritative merge rule is the one `theme_synthesis.py` follows. |
+| The four outcome tests, the theme counting and the assessment record | **`consumer-duty-monitoring` (this repo)** | owned outright: `domain/outcome_tests.py`, `domain/theme_synthesis.py`, `domain/models.py`. |
+| Consent, channel preferences and the decision authority over them | `marketing-compliance-gate` marketing and claims compliance gate (hosts the consent and preference store) | READ-ONLY over `ConsentLookupPort` through the shared `consent-preference-kit` (`CONSUMERDUTY_CONSENT_URL`). This repo never records a send and never writes consent. |
+| Complaint categorisation and conduct flags | `complaints-review` complaints and conduct file review | consumed as normalised `OutcomeSignal`s. Its deterministic-counting-is-authoritative merge rule is the one `theme_synthesis.py` follows. |
 | Conversation QA scoring | **E3** conversation QA and compliance scorecard | consumed as normalised signals. |
-| Next-best-action outcomes | **Mkt5** next-best-action | consumed as normalised signals. |
+| Next-best-action outcomes | `next-best-action` next-best-action | consumed as normalised signals. |
 | Complaints intake | **F2** disputes and chargebacks | DECLARED in the taxonomy (`SignalSource.INTAKE`) and exercised from a fixture; not built. Its adapter registers on arrival as configuration, not as an engine change. |
-| Human review and maker-checker | **Hrz7** human review console | `ReviewRouterPort` over the shared `review-kit` (`HUMAN_REVIEW_URL`). This repo produces escalations; it does not render a queue. |
-| Model and agent promotion | **Hrz4** AI quality and model risk | `eval/run_eval.py --mode gate` asks Hrz4 (`CONSUMERDUTY_QUALITY_URL`); the offline smoke mode never promotes. |
-| Traces and the immutable audit sink | **Hrz5** agent observability | `AuditSinkPort` and `ObservabilityTracerPort`; `OTEL_EXPORTER_OTLP_ENDPOINT` selects the Hrz5 collector. |
-| Agent discovery and entitlements | **Hrz3** agent registry | this agent publishes a card; the registry owns discovery. |
-| Prompt-injection defence and output filtering | **Hrz1** agent guardrail gateway | **not wired today.** It becomes mandatory the moment untrusted free text reaches a narrator (rule R1). |
-| Grounded retrieval over an enterprise corpus | **Hrz2** enterprise knowledge base | not wired today; nothing here retrieves. |
+| Human review and maker-checker | `human-review-console` human review console | `ReviewRouterPort` over the shared `review-kit` (`HUMAN_REVIEW_URL`). This repo produces escalations; it does not render a queue. |
+| Model and agent promotion | `model-quality-gate` AI quality and model risk | `eval/run_eval.py --mode gate` asks `model-quality-gate` (`CONSUMERDUTY_QUALITY_URL`); the offline smoke mode never promotes. |
+| Traces and the immutable audit sink | `agent-observability` agent observability | `AuditSinkPort` and `ObservabilityTracerPort`; `OTEL_EXPORTER_OTLP_ENDPOINT` selects the `agent-observability` collector. |
+| Agent discovery and entitlements | `agent-registry` | this agent publishes a card; the registry owns discovery. |
+| Prompt-injection defence and output filtering | `agent-guardrail-gateway` agent guardrail gateway | **not wired today.** It becomes mandatory the moment untrusted free text reaches a narrator (rule R1). |
+| Grounded retrieval over an enterprise corpus | `enterprise-knowledge-base` | not wired today; nothing here retrieves. |
 
 ### Can I demo it without a cloud project?
 
@@ -98,6 +98,6 @@ The honest list is [`../practices-audit.md`](../practices-audit.md) and the `TOD
 rows in [`../../COMPLIANCE.md`](../../COMPLIANCE.md). The three that matter most for a production
 decision: every managed feed, store and narration adapter is still construction-only (they are
 listed in `managed_readiness.py`, and the Terraform refuses to plan a serving edge while that
-list is non-empty), the Hrz1 guardrail binding is unwired, and this repo's metric bundle is not
-yet registered with Hrz4 so `--mode gate` has no authority to ask. The F2 intake feed is declared
+list is non-empty), the `agent-guardrail-gateway` binding is unwired, and this repo's metric bundle is not
+yet registered with `model-quality-gate` so `--mode gate` has no authority to ask. The F2 intake feed is declared
 rather than integrated, which is deliberate and visible in the taxonomy.
