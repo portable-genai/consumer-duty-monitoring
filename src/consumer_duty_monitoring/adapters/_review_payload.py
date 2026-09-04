@@ -21,6 +21,10 @@ from review_kit import Review
 from ..domain.kernel import Severity
 from ..domain.models import OutcomeAssessment
 
+#: The repository name prefixes every source_key: it is the dedup key the
+#: human-review-console stores, so it names the producer.
+_REPOSITORY = "consumer-duty-monitoring"
+
 #: Cap the citations carried on the wire: enough for a reviewer to trace the decision without
 #: copying the whole evidence set into the console.
 _MAX_CITATIONS = 8
@@ -84,6 +88,6 @@ def result_to_review(assessment: OutcomeAssessment, *, maker: str, tenant: str =
         sod_group="consumer_duty_monitoring-maker-checker",
         case_ref=assessment.assessment_id,
         # Producer-owned, tenant-scoped key so a retried delivery is idempotent at the console.
-        source_key=f"consumer-duty-monitoring:{tenant or assessment.tenant}:{assessment.assessment_id}",
+        source_key=f"{_REPOSITORY}:{tenant or assessment.tenant}:{assessment.assessment_id}",
         citations=_kit_citations(assessment),
     )
