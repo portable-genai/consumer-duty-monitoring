@@ -1,6 +1,6 @@
 # Adopting this repo as your base
 
-This repository (Rgc15, Consumer Duty Monitoring) is a **common base** that a bank, insurer or
+This repository (`consumer-duty-monitoring`, Consumer Duty Monitoring) is a **common base** that a bank, insurer or
 other regulated firm forks to build its own **fair-outcomes monitor**: a service that pulls
 complaint, conversation-QA and next-best-action signals into one normalised shape, runs four
 deterministic outcome tests per product against the firm's own thresholds, synthesises the
@@ -25,17 +25,17 @@ The core is hexagonal, and the boundary between reusable machinery and the Consu
 is a physical module split with an enforced dependency direction (practices-audit check A7).
 `domain/kernel.py` owns the vertical-neutral contracts and imports nothing from the vertical, so
 you can import it without loading a line of outcome-test logic; `domain/models.py` holds only the
-Rgc15 artifacts and re-exports every kernel name.
+`consumer-duty-monitoring` artifacts and re-exports every kernel name.
 
 | Layer | Where | For a different outcome framework |
 |---|---|---|
 | **Vertical-neutral machinery** | `domain/kernel.py` (`Citation`, `AuditEvent`, `Severity`, `Decision`, `utcnow`), `domain/errors.py`, every Protocol in `ports/`, the container wiring in `config.py`, the assembly seam in `service.py` | keep untouched |
 | **Policy (your numbers and sets)** | the reference pack `src/consumer_duty_monitoring/rulepacks/consumer_duty.yaml` (the harm rate, the drift tolerance, the price-vs-value cutoff and the vulnerable-customer threshold, each citing its instrument, loaded by `outcome_pack.py` into `domain/policy.py`), the jurisdiction list in `domain/pii.py`, the metric thresholds in `eval/run_eval.py` | change deliberately (see section 4) |
-| **Vertical (the artifacts themselves)** | the Rgc15 models in `domain/models.py` (`OutcomeSignal`, `SignalSource`, `ProductGovernanceFrame`, `OutcomeTestFamily`, `OutcomeTestResult`, `TestOutcome`, `Theme`, `Narration`, `OutcomeAssessment`), the four kernels in `domain/outcome_tests.py`, the counting in `domain/theme_synthesis.py`, the grounding gate in `domain/narration.py`, `domain/serialization.py`, the local fixtures and the eval golden set | rewrite for your framework |
+| **Vertical (the artifacts themselves)** | the `consumer-duty-monitoring` models in `domain/models.py` (`OutcomeSignal`, `SignalSource`, `ProductGovernanceFrame`, `OutcomeTestFamily`, `OutcomeTestResult`, `TestOutcome`, `Theme`, `Narration`, `OutcomeAssessment`), the four kernels in `domain/outcome_tests.py`, the counting in `domain/theme_synthesis.py`, the grounding gate in `domain/narration.py`, `domain/serialization.py`, the local fixtures and the eval golden set | rewrite for your framework |
 
 If your product is another *normalise many feeds, test each entity against a threshold pack,
 count the breaches into themes* monitor, most of the hexagon, the three profiles, the
-deterministic-verdict pattern, the eval gate and the Hrz7 review routing transfer directly; you
+deterministic-verdict pattern, the eval gate and the `human-review-console` review routing transfer directly; you
 replace the four test kernels and the signal taxonomy, and retune the pack.
 
 ## 2. Core-vs-adopter-owned files (so upstream merges stay mechanical)
@@ -80,7 +80,7 @@ make gate
 `--dist` defaults to the `--resource` value; pass it explicitly when your git id differs from
 your resource stem. `--resource` is validated against the same regex the Terraform `name_prefix`
 variable enforces, so a stem the stack would refuse fails here instead of at plan time. Add
-`--include-docs` to sweep Markdown prose too. The catalog id `Rgc15` is left alone unless you
+`--include-docs` to sweep Markdown prose too. The catalog id `consumer-duty-monitoring` is left alone unless you
 pass `--catalog-id`, so a fork stays traceable to the entry it descends from. The script
 deliberately does NOT touch the human decisions below.
 
@@ -148,34 +148,34 @@ owned by sibling platform services, and you should integrate rather than rebuild
 [`faq/features-faq.md`](faq/features-faq.md) for the full map). The `gcp` profile's adapters are
 already thin clients to them:
 
-- **Mkt6** marketing and claims compliance gate: hosts the catalog's consent and preference store
+- `marketing-compliance-gate` marketing and claims compliance gate: hosts the catalog's consent and preference store
   and remains its decision authority. This repo reads it READ-ONLY through `ConsentLookupPort`
   over the shared `consent-preference-kit` (`CONSUMERDUTY_CONSENT_URL`), never records a send and
   never writes consent. Do not keep a second preference table here.
-- **Doc6** complaints and conduct file review: the complaint categorisations and conduct flags
+- `complaints-review` complaints and conduct file review: the complaint categorisations and conduct flags
   that arrive as `OutcomeSignal`s. Its categorisation merge rule (deterministic counting is
   authoritative, a model may only phrase it) is the same rule `domain/theme_synthesis.py`
   follows.
 - **E3** conversation QA and compliance scorecard: the conversation-QA failures that arrive as
   signals.
-- **Mkt5** next-best-action: the recommendation outcomes that arrive as signals.
+- `next-best-action` next-best-action: the recommendation outcomes that arrive as signals.
 - **F2** disputes and chargebacks: the complaints-intake feed, DECLARED in the taxonomy
   (`SignalSource.INTAKE`) and exercised from a fixture, but not built. Its adapter registers on
   arrival as configuration, not as an engine change.
-- **Hrz7** human-review / maker-checker console: every consequential assessment is routed to it
+- `human-review-console` human-review / maker-checker console: every consequential assessment is routed to it
   over the shared `review-kit` (rule R8); you wire your endpoint
   (`HUMAN_REVIEW_URL`), you do not re-implement the console.
-- **Hrz4** AI-quality / model-risk gate: owns promotion. `eval/run_eval.py --mode gate` is the
+- `model-quality-gate` AI-quality / model-risk gate: owns promotion. `eval/run_eval.py --mode gate` is the
   client half (`CONSUMERDUTY_QUALITY_URL`) and refuses to run off the managed profile.
-- **Hrz5** observability plus immutable WORM audit: audit events and trace spans go to it via
-  `AuditSinkPort` and `ObservabilityTracerPort` (`OTEL_EXPORTER_OTLP_ENDPOINT` selects the Hrz5
+- `agent-observability` plus immutable WORM audit: audit events and trace spans go to it via
+  `AuditSinkPort` and `ObservabilityTracerPort` (`OTEL_EXPORTER_OTLP_ENDPOINT` selects the `agent-observability`
   collector over direct Cloud Trace).
-- **Hrz3** agent registry: this agent publishes its A2A card at
+- `agent-registry`: this agent publishes its A2A card at
   `/.well-known/agent-card.json`; register it rather than inventing a discovery mechanism.
 
-The guardrail gateway (Hrz1) is **not** integrated today. It becomes mandatory the moment
+The guardrail gateway (`agent-guardrail-gateway`) is **not** integrated today. It becomes mandatory the moment
 untrusted free text (a verbatim complaint narrative, say) reaches a model: see rule R1 in
-[`../COMPLIANCE.md`](../COMPLIANCE.md). The enterprise knowledge base (Hrz2) is likewise
+[`../COMPLIANCE.md`](../COMPLIANCE.md). The enterprise knowledge base (`enterprise-knowledge-base`) is likewise
 unwired, because nothing here retrieves.
 
 ## 6. Adoption checklist
@@ -188,7 +188,7 @@ unwired, because nothing here retrieves.
       the fail-closed load and the omitted-family-is-a-GAP invariant.
 - [ ] Registered your real signal feeds behind `SignalSourcePort` and your product governance
       records behind `ProductGovernancePort`.
-- [ ] Pointed `ConsentLookupPort` at your Mkt6 consent and preference store, read-only.
+- [ ] Pointed `ConsentLookupPort` at your `marketing-compliance-gate` consent and preference store, read-only.
 - [ ] Owned the policy numbers (PII jurisdictions, eval thresholds) with your compliance
       function.
 - [ ] Replaced every synthetic fixture, including the consent preference fixture.
@@ -198,7 +198,7 @@ unwired, because nothing here retrieves.
       `INCOMPLETE_MANAGED_OPERATIONS`, and flipped `managed_profile_implemented` in the same
       reviewed commit.
 - [ ] Reviewed the deploy posture (Dockerfile, Terraform, `retention_days`, bind address).
-- [ ] Wired your Hrz7 review endpoint and decided which sibling services you integrate vs stub.
+- [ ] Wired your `human-review-console` review endpoint and decided which sibling services you integrate vs stub.
 - [ ] Read [`model-card.md`](model-card.md) and closed its remaining controls before binding a
       real narrator.
 - [ ] Recorded your baseline upstream tag so you can take future fixes.

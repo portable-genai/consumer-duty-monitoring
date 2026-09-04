@@ -1,11 +1,12 @@
 """SignalSourcePort: the feed-agnostic intake of complaint / conversation / recommendation signals.
 
-Rgc15's intake is deliberately feed-agnostic. It consumes complaint categorisations and conduct
-flags from built Doc6, conversation-QA scorecards from E3, and next-best-action outcomes from
-Mkt5, and it will consume the F2 complaints-intake feed when that is built in a later wave. Every
-source maps into ONE normalised :class:`~..domain.models.OutcomeSignal` shape, so the engine reads
-one vocabulary rather than three feed schemas, and registering a new feed (F2) is a new adapter
-behind this unchanged port, not an engine change.
+consumer-duty-monitoring's intake is deliberately feed-agnostic. It consumes complaint
+categorisations and conduct flags from built complaints-review, conversation-QA scorecards from E3,
+and next-best-action outcomes from next-best-action, and it will consume the F2 complaints-intake
+feed when that is built in a later wave. Every source maps into ONE normalised
+:class:`~..domain.models.OutcomeSignal` shape, so the engine reads one vocabulary rather than three
+feed schemas, and registering a new feed (F2) is a new adapter behind this unchanged port, not an
+engine change.
 
 The offline family reads obviously-synthetic fixtures for all three built sources plus a declared
 F2 fixture. The managed family reads BigQuery / the sibling services with a lazy import. The

@@ -3,9 +3,9 @@
 Gathers a tenant's signals, product frame and vulnerable-subject consent context; runs the
 deterministic outcome-test engine; synthesises themes by deterministic counting; drafts a grounded
 narration that may only restate the engine; redacts before the audit write; routes every
-consequential assessment to Hrz7 (rule R8) in the same call that produced it; and stores and
-exports the result. Every number and every verdict come from the engine; the narration adds no
-figure and no citation the engine did not emit.
+consequential assessment to human-review-console (rule R8) in the same call that produced it; and
+stores and exports the result. Every number and every verdict come from the engine; the narration
+adds no figure and no citation the engine did not emit.
 
 The domain stays pure: it talks only to ports (Protocols) and models, and to ``pii-kit`` for
 redaction. It never imports ``config``. Every surface builds this service through ``service.py``,
@@ -49,7 +49,8 @@ from .serialization import assessment_to_row
 from .theme_synthesis import synthesize_themes
 
 #: The purpose the consent lookup asks about. The monitor checks whether a vulnerable subject who
-#: was CONTACTED had granted a preference to be; "marketing" is the purpose Mkt5's outreach uses.
+#: was CONTACTED had granted a preference to be; "marketing" is the purpose next-best-action's
+#: outreach uses.
 _CONSENT_PURPOSE = "marketing"
 
 #: One span per assessment. Structural attributes only: see :meth:`AssessmentService.assess`.

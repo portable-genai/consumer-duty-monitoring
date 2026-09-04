@@ -78,7 +78,7 @@ the returned draft against the closed set of figures the engine published
 (`brief.allowed_source_ids`); a draft that mentions a figure the engine did not publish is
 DISCARDED and the deterministic narration stands. Returning `None` and RAISING are both
 first-class answers, so a broken or unreachable narrator degrades rather than blocking an
-assessment. Prompt-injection screening through the Hrz1 guardrail gateway is **not** wired yet,
+assessment. Prompt-injection screening through the `agent-guardrail-gateway` is **not** wired yet,
 so a verbatim complaint narrative should not be fed to a narrator until it is (rule R1 in
 `COMPLIANCE.md`).
 
@@ -107,13 +107,12 @@ dependency, so a fork resolving the locks needs a credential for it.
 
 - **Login.** This repo authenticates nobody itself: the platform in front of it does, and the UI
   forwards the assertion without parsing or trusting a parsed copy.
-- **Consent decisions.** Owned by the consent and preference store inside Mkt6, which stays the
+- **Consent decisions.** Owned by the consent and preference store inside `marketing-compliance-gate`, which stays the
   decision authority. This repo reads it read-only and fail-closed.
-- **Injection defence and output filtering.** Owned by Hrz1; not bound yet.
-- **The review queue.** Owned by Hrz7; this repo produces escalations and routes them.
-- **Complaint categorisation, conversation scoring and recommendation outcomes.** Owned by Doc6,
-  E3 and Mkt5; this repo consumes their outputs as normalised signals.
+- **Injection defence and output filtering.** Owned by `agent-guardrail-gateway`; not bound yet.
+- **The review queue.** Owned by `human-review-console`; this repo produces escalations and routes them.
+- **Complaint categorisation, conversation scoring and recommendation outcomes.** Owned by `complaints-review`,
+  E3 and `next-best-action`; this repo consumes their outputs as normalised signals.
 - **Network egress control.** VPC-SC governs access to Google APIs across perimeters, not
-  arbitrary internet egress. The private-egress rule that lets this service reach the Hrz7
-  console and the Mkt6 consent store and nothing else is an adopter network decision, called out
+  arbitrary internet egress. The private-egress rule that lets this service reach the `human-review-console` and the `marketing-compliance-gate` consent store and nothing else is an adopter network decision, called out
   in `COMPLIANCE.md` P-01.

@@ -1,4 +1,4 @@
-"""Consumer Duty Monitoring (Rgc15).
+"""Consumer Duty Monitoring (consumer-duty-monitoring).
 
 Deterministic Consumer Duty outcome-testing and board-facing fair-value monitoring.
 

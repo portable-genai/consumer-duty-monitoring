@@ -1,4 +1,4 @@
-"""FastAPI application for Consumer Duty Monitoring (Rgc15).
+"""FastAPI application for Consumer Duty Monitoring (consumer-duty-monitoring).
 
 Import-safe (the Container is built at request time, never at import; only ``Settings`` is read
 at import, to learn which identity adapter is bound, and no adapter is constructed), identity is
@@ -286,8 +286,8 @@ def assess(
     The tenant and the audited actor come from the verified principal, never the request body: a
     body tenant may only narrow to the principal's own, so a caller cannot assess another tenant.
 
-    Rule R8: an assessment that sets ``requires_human_review`` is ROUTED to the Hrz7 console here,
-    in the same call that produced it. Setting the flag is not the escalation; routing is.
+    Rule R8: an assessment that sets ``requires_human_review`` is ROUTED to the human-review-console
+    here, in the same call that produced it. Setting the flag is not the escalation; routing is.
     """
     container = _container()
     tenant = principal.tenant or request.tenant

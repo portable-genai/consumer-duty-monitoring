@@ -24,10 +24,11 @@ from .kernel import Citation, Decision, Severity
 class SignalSource(LenientStrEnum):
     """Where a normalised outcome signal came from. Feed-agnostic by design.
 
-    Rgc15 is a named consumer of built Doc6 complaint categorisations and conduct flags, of E3
-    conversation-QA scorecards, and of Mkt5 next-best-action outcomes. ``INTAKE`` is the F2
-    complaints-intake feed, declared here but not yet built: its adapter registers on arrival as
-    configuration only, and until then the F2 slice reads from a declared fixture.
+    consumer-duty-monitoring is a named consumer of built complaints-review complaint
+    categorisations and conduct flags, of E3 conversation-QA scorecards, and of next-best-action
+    next-best-action outcomes. ``INTAKE`` is the F2 complaints-intake feed, declared here but not
+    yet built: its adapter registers on arrival as configuration only, and until then the F2 slice
+    reads from a declared fixture.
     """
 
     COMPLAINTS = "complaints"

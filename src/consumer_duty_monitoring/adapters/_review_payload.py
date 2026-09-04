@@ -1,11 +1,12 @@
 """Shared conversion from an escalated assessment to an ``review-kit`` Review payload.
 
-Lives in the adapter layer, not the pure domain, because it depends on the kit. The subject,
-summary and every citation snippet are redacted BEFORE they leave the process (the same
-redact-before-anything rule the audit write obeys), using the shared ``pii-kit``, so no raw
-identifier reaches Hrz7 over the wire; Hrz7 redacts again before its own audit write (defence in
-depth). ``maker`` and ``tenant`` are asserted here and trusted by Hrz7 because the caller is an
-authenticated S2S service; per-hop on-behalf-of token exchange is the deferred next layer.
+Lives in the adapter layer, not the pure domain, because it depends on the kit. The subject, summary
+and every citation snippet are redacted BEFORE they leave the process (the same redact-before-
+anything rule the audit write obeys), using the shared ``pii-kit``, so no raw identifier reaches
+human-review-console over the wire; human-review-console redacts again before its own audit write
+(defence in depth). ``maker`` and ``tenant`` are asserted here and trusted by human-review-console
+because the caller is an authenticated S2S service; per-hop on-behalf-of token exchange is the
+deferred next layer.
 """
 
 from __future__ import annotations
@@ -69,7 +70,9 @@ def _summary(assessment: OutcomeAssessment) -> str:
 
 
 def result_to_review(assessment: OutcomeAssessment, *, maker: str, tenant: str = "") -> Review:
-    """Build the review a producer submits to Hrz7 when an assessment escalates (rule R8)."""
+    """Build the review a producer submits to human-review-console when an assessment escalates
+    (rule R8).
+    """
     return Review(
         action="consumer_duty_monitoring:assess",
         subject=assessment.assessment_id,
@@ -81,6 +84,6 @@ def result_to_review(assessment: OutcomeAssessment, *, maker: str, tenant: str =
         sod_group="consumer_duty_monitoring-maker-checker",
         case_ref=assessment.assessment_id,
         # Producer-owned, tenant-scoped key so a retried delivery is idempotent at the console.
-        source_key=f"Rgc15:{tenant or assessment.tenant}:{assessment.assessment_id}",
+        source_key=f"consumer-duty-monitoring:{tenant or assessment.tenant}:{assessment.assessment_id}",
         citations=_kit_citations(assessment),
     )

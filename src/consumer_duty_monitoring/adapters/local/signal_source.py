@@ -1,10 +1,10 @@
 """Local SignalSourcePort: SDK-free intake of obviously-synthetic outcome signals.
 
-The offline stand-in for the managed intake (BigQuery plus the sibling services Doc6, E3 and
-Mkt5). It serves the shared synthetic dataset (``_seed.py``), already normalised into the one
-``OutcomeSignal`` shape every source maps to, and filters on tenant so a load can never span
-tenants. The F2 intake source is present in the dataset as a DECLARED fixture, so the feed-agnostic
-intake is exercised end to end before F2 itself is built.
+The offline stand-in for the managed intake (BigQuery plus the sibling services complaints-review,
+E3 and next-best-action). It serves the shared synthetic dataset (``_seed.py``), already normalised
+into the one ``OutcomeSignal`` shape every source maps to, and filters on tenant so a load can never
+span tenants. The F2 intake source is present in the dataset as a DECLARED fixture, so the feed-
+agnostic intake is exercised end to end before F2 itself is built.
 """
 
 from __future__ import annotations

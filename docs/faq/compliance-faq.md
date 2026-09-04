@@ -96,8 +96,8 @@ comes from the deterministic engine either way. The narration grounding gate
 of 1.0 against adversarial drafts built in the eval harness, so the gate is proved able to reject
 before a model is ever bound. What is NOT yet in place: the managed narrator is unimplemented,
 its default model id is an untested config default rather than a confirmed pin, there is no token
-budget, rate limit or kill switch, no live-model eval run has been registered with the Hrz4
-promotion gate, and prompt-injection screening through Hrz1 is not bound.
+budget, rate limit or kill switch, no live-model eval run has been registered with the `model-quality-gate`
+promotion gate, and prompt-injection screening through `agent-guardrail-gateway` is not bound.
 
 ### Which regulations does this claim to satisfy?
 
@@ -116,6 +116,6 @@ in `domain/` is bank-owned logic rather than a vendor default to inherit unexami
 The `Partial` and `TODO (repo owner)` rows in `COMPLIANCE.md`, each of which names exactly what
 is missing. The ones that need a risk acceptance if you go live without them: the
 construction-only managed adapters listed in `managed_readiness.py` (which the Terraform edge
-gate refuses to serve past), rule R1 (the Hrz1 guardrail binding), rule R5 and P-08 (the Hrz4
+gate refuses to serve past), rule R1 (the `agent-guardrail-gateway` binding), rule R5 and P-08 (the `model-quality-gate`
 metric bundle), P-10 (timeouts, circuit breaker and a documented kill switch), and P-01's
 private-egress rule, which depends on your own network rather than on this repo.

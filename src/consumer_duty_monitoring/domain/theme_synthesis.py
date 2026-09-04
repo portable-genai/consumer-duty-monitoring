@@ -5,9 +5,9 @@ a hundred rows, so this module groups the breaching and gapped results into one 
 family, counting deterministically: the breach count, the products implicated and the signal ids
 behind them are all computed here, in pure stdlib.
 
-The merge rule mirrors Doc6's categorization service: the deterministic themes are AUTHORITATIVE.
-A model narrator (``domain/narration.py``) may phrase them and add cited colour, but it cannot
-remove a theme the counting produced or change a count. Embedding-based clustering, when a
+The merge rule mirrors complaints-review's categorization service: the deterministic themes are
+AUTHORITATIVE. A model narrator (``domain/narration.py``) may phrase them and add cited colour, but
+it cannot remove a theme the counting produced or change a count. Embedding-based clustering, when a
 managed profile provides it, is advisory only and never edits these figures.
 """
 
