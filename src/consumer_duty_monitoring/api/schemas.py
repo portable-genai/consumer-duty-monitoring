@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import BaseModel
 
 from ..domain.models import OutcomeAssessment
@@ -65,15 +67,22 @@ class AssessmentResponse(BaseModel):
     breach_count: int
     gap_count: int
     #: Where the escalation WENT (rule R8): the human-review-console review id, or the local queue
-    #: reference. Empty only when the assessment did not escalate.
+    #: reference. Empty exactly when ``review_routing`` is not ``routed``.
     review_ref: str = ""
+    #: What happened to the hand-off: routed, failed, off or not_required. ``failed`` means the
+    #: result is NOT queued for review, and the console says so. ``None`` on a READ of a stored
+    #: assessment: the hand-off belonged to the request that produced it, and a read that said
+    #: ``not_required`` about an escalated assessment would be a false statement.
+    review_routing: Literal["routed", "failed", "off", "not_required"] | None = None
     results: list[OutcomeTestModel] = []
     themes: list[ThemeModel] = []
     narration: NarrationModel | None = None
     citations: list[CitationModel] = []
 
     @classmethod
-    def from_domain(cls, assessment: OutcomeAssessment) -> AssessmentResponse:
+    def from_domain(
+        cls, assessment: OutcomeAssessment, *, review_routing: str | None = None
+    ) -> AssessmentResponse:
         return cls(
             assessment_id=assessment.assessment_id,
             tenant=assessment.tenant,
@@ -88,6 +97,7 @@ class AssessmentResponse(BaseModel):
             breach_count=assessment.breach_count,
             gap_count=assessment.gap_count,
             review_ref=assessment.review_ref,
+            review_routing=review_routing,  # type: ignore[arg-type]
             results=[
                 OutcomeTestModel(
                     test_id=r.test_id,

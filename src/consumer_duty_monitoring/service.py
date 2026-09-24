@@ -15,17 +15,25 @@ from .config import Container
 from .domain.assessment_service import AssessmentService
 from .domain.policy import OutcomePolicy
 from .outcome_pack import pack_for
+from .ports.review_router import ReviewRouterPort
 
 
-def build_service(container: Container) -> AssessmentService:
-    """Wire every port the assessment path needs. No surface may build a narrower one."""
+def build_service(
+    container: Container, *, review_router: ReviewRouterPort | None = None
+) -> AssessmentService:
+    """Wire every port the assessment path needs. No surface may build a narrower one.
+
+    ``review_router`` is the per-call recording wrapper a surface passes so its answer can say
+    what happened to the hand-off (the fleet's runtime-control contract); it wraps
+    ``container.review_router`` and never replaces it with a different router.
+    """
     return AssessmentService(
         audit=container.audit,
         signals=container.signal_source,
         products=container.product_governance,
         consent=container.consent,
         store=container.assessment_store,
-        review_router=container.review_router,
+        review_router=review_router if review_router is not None else container.review_router,
         narrator=container.narration,
         warehouse=container.warehouse,
         tracer=container.tracer,

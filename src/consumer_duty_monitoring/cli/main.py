@@ -7,6 +7,7 @@ import sys
 
 from hex_service_kit.logging import configure_logging
 
+from ..adapters.controls import RecordingReviewRouter
 from ..config import build_container
 from ..domain.kernel import utcnow
 from ..service import build_service, policy_for
@@ -29,7 +30,8 @@ def main(argv: list[str] | None = None) -> int:
     configure_logging(container.settings.profile, service="consumer-duty-monitoring")
 
     if args.command == "assess":
-        service = build_service(container)
+        routing = RecordingReviewRouter(container.review_router)
+        service = build_service(container, review_router=routing)
         assessment = service.assess(
             args.tenant, policy_for(container), actor=args.actor, as_of=utcnow()
         )
@@ -43,9 +45,8 @@ def main(argv: list[str] | None = None) -> int:
         for result in assessment.breaches:
             print(f"  - {result.family.value} / {result.product_id}: {result.outcome.value}")
         print(f"  requires_human_review: {assessment.requires_human_review}")
-        if assessment.review_ref:
-            # Rule R8 on the CLI path too: routed inside the service, not merely printed.
-            print(f"  routed to human review: {assessment.review_ref}")
+        # Rule R8 on the CLI path too: routed inside the service, not merely printed.
+        print(f"  human review hand-off : {routing.outcome.value} {assessment.review_ref}".rstrip())
         return 0
 
     if args.command == "verify-audit":
