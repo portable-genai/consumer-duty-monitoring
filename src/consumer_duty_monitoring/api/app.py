@@ -67,6 +67,7 @@ from hex_service_kit.web import (
     make_require_service_caller,
 )
 
+from ..adapters.controls import RecordingReviewRouter
 from ..config import (
     LOCAL_PROFILE,
     Container,
@@ -291,11 +292,14 @@ def assess(
     """
     container = _container()
     tenant = principal.tenant or request.tenant
-    service = build_service(container)
+    # The hand-off never fails an already-computed, already-audited assessment; the response
+    # says what happened to it instead (the fleet's runtime-control contract).
+    routing = RecordingReviewRouter(container.review_router)
+    service = build_service(container, review_router=routing)
     assessment = service.assess(
         tenant, policy_for(container), actor=principal.actor, as_of=utcnow()
     )
-    return AssessmentResponse.from_domain(assessment)
+    return AssessmentResponse.from_domain(assessment, review_routing=routing.outcome.value)
 
 
 @app.get("/v1/assessments/{assessment_id}", response_model=AssessmentResponse, tags=["artifacts"])

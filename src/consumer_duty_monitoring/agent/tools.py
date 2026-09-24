@@ -21,6 +21,7 @@ from typing import TYPE_CHECKING, Any
 from hex_service_kit.serialization import to_jsonable
 from pii_kit import redact
 
+from ..adapters.controls import RecordingReviewRouter
 from ..config import Container, Settings, build_container
 from ..domain.kernel import utcnow
 from ..domain.pii import PII_PATTERNS
@@ -74,17 +75,20 @@ def run_assessment(
 
     Returns:
       A JSON-safe result dict with every string masked for personal data (P-04: a tool result
-      goes into a model's context). ``review_ref`` records where the escalation WENT; it is empty
-      only when the assessment did not escalate.
+      goes into a model's context). ``review_ref`` records where the escalation WENT, and
+      ``review_routing`` says what happened to the hand-off: routed, failed, off or
+      not_required. The reference is empty exactly when ``review_routing`` is not ``routed``.
     """
     container = _container(settings)
-    service = build_service(container)
+    routing = RecordingReviewRouter(container.review_router)
+    service = build_service(container, review_router=routing)
     assessment = service.assess(tenant, policy_for(container), actor=actor, as_of=utcnow())
     payload = _redacted(to_jsonable(assessment))
     if not isinstance(payload, dict):  # pragma: no cover - dataclasses serialise to objects
         raise TypeError("an assessment must serialise to a JSON object")
     # Attached after the redaction pass: it is a routing reference, not narrative text.
     payload["review_ref"] = assessment.review_ref
+    payload["review_routing"] = routing.outcome.value
     return payload
 
 

@@ -47,8 +47,9 @@ Four things, and none of them is code here:
    defaulting to an allow, and the kit synthesises a DENIED decision when the store is
    unreachable, so an unavailable consent state never reads as permission.
 
-Plus the review console: an `human-review-console` deployment at `HUMAN_REVIEW_URL`. The managed router REFUSES
-to swallow an escalation when this is empty, so a fork cannot ship rule R8 unwired and green.
+Plus the review console: an `human-review-console` deployment at `HUMAN_REVIEW_URL`. With routing on and this
+empty the managed profile REFUSES TO BOOT, so a fork cannot ship rule R8 unwired and green;
+`CONSUMERDUTY_REVIEW_ROUTING=off` is the stated way to run without routing.
 
 ### How do I add a new outbound dependency (a new port)?
 

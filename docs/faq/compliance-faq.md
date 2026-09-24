@@ -30,8 +30,11 @@ A human, always, for anything consequential. `requires_human_review` and the cal
 `ReviewRouterPort.route` are one act, not a flag plus an intention: every surface goes through
 `service.build_service` and routes in the same call that produced the result, and
 `tests/unit/test_review_routing.py` asserts the routing rather than the flag. A CRITICAL band
-demands two approvals (`adapters/_review_payload.py`). Under the managed profile the router
-REFUSES when no console is configured, so a deployment cannot swallow an escalation silently. The
+demands two approvals (`adapters/_review_payload.py`). Under the managed profile the service
+refuses to boot with routing on and no console configured, and a hand-off that fails at request
+time is reported as `review_routing: "failed"` and logged, so a deployment cannot swallow an
+escalation silently. `CONSUMERDUTY_REVIEW_ROUTING=off` switches routing off, stated and logged at
+startup. The
 eval scores this directly as `review_safety` at a threshold of 1.0.
 
 ### Where does the data live, and is residency enforced or just documented?
