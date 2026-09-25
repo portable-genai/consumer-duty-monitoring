@@ -19,6 +19,16 @@ const REVIEW_ROUTING_TEXT: Record<string, string> = {
   off: "Review routing is off in this deployment; this assessment is not queued for review.",
 };
 
+// The id of the assessment a response carries, so the console can read it back from the store.
+function assessmentIdOf(body: string): string | undefined {
+  try {
+    const parsed = JSON.parse(body) as { assessment_id?: unknown };
+    return typeof parsed.assessment_id === "string" ? parsed.assessment_id : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function reviewRoutingOf(body: string): string | undefined {
   try {
     const parsed = JSON.parse(body) as { review_routing?: unknown };
@@ -36,8 +46,7 @@ interface CardSummary {
 
 export default function Home() {
   const [persona, setPersona] = useState(PERSONAS[0]);
-  const [subject, setSubject] = useState("Acme Holdings (FICTIONAL)");
-  const [text, setText] = useState("urgent data breach reported by the branch");
+  const [assessmentId, setAssessmentId] = useState("");
   const [result, setResult] = useState("");
   const [failed, setFailed] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -57,15 +66,42 @@ export default function Home() {
     };
   }, []);
 
-  async function submit(event: React.FormEvent) {
+  // An assessment covers the verified principal's own tenant, and the tenant comes from identity,
+  // so the console sends an empty body: `AssessRequest.tenant` is optional and a tenant typed in
+  // the browser would be a client-asserted one.
+  async function assess(event: React.FormEvent) {
     event.preventDefault();
     setBusy(true);
     setFailed(false);
     try {
-      const response = await fetch(API + "/v1/triage", {
+      const response = await fetch(API + "/v1/assess", {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Dev-Persona": persona },
-        body: JSON.stringify({ subject, text }),
+        body: JSON.stringify({}),
+      });
+      const body = await response.text();
+      setFailed(!response.ok);
+      setResult(body);
+      const stored = response.ok ? assessmentIdOf(body) : undefined;
+      if (stored) setAssessmentId(stored);
+    } catch (error) {
+      setFailed(true);
+      setResult(String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // Reads a stored assessment as the CURRENT persona. The tenant boundary is the service's: a
+  // persona from another tenant is answered 403, never the record.
+  async function readBack(event: React.FormEvent) {
+    event.preventDefault();
+    setBusy(true);
+    setFailed(false);
+    try {
+      const response = await fetch(API + "/v1/assessments/" + encodeURIComponent(assessmentId), {
+        cache: "no-store",
+        headers: { "X-Dev-Persona": persona },
       });
       const body = await response.text();
       setFailed(!response.ok);
@@ -83,10 +119,10 @@ export default function Home() {
       <h1>{card?.name ?? "Agent console"}</h1>
       <p className="sub">
         {card?.description ??
-          "Submit a case. The decision is deterministic, cited, and routed to a human reviewer when it escalates."}
+          "Run a Consumer Duty outcome assessment. The result is deterministic, cited, and routed to a human reviewer when it escalates."}
       </p>
 
-      <form onSubmit={submit}>
+      <form onSubmit={assess}>
         <fieldset>
           <legend>Who you are</legend>
           <label>
@@ -102,17 +138,26 @@ export default function Home() {
         </fieldset>
 
         <fieldset>
-          <legend>The case</legend>
-          <label>
-            Subject
-            <input value={subject} onChange={(event) => setSubject(event.target.value)} />
-          </label>
-          <label>
-            Description
-            <textarea value={text} onChange={(event) => setText(event.target.value)} />
-          </label>
+          <legend>Outcome assessment</legend>
+          <p className="sub">
+            Tests the outcome signals and product governance of this persona&apos;s own tenant. The
+            tenant comes from the resolved identity, so there is nothing to type.
+          </p>
           <button type="submit" disabled={busy}>
-            {busy ? "Working" : "Triage this case"}
+            {busy ? "Working" : "Run the assessment"}
+          </button>
+        </fieldset>
+      </form>
+
+      <form onSubmit={readBack}>
+        <fieldset>
+          <legend>Read a stored assessment</legend>
+          <label>
+            Assessment id (filled in by the last run; switch persona to see the tenant boundary)
+            <input value={assessmentId} onChange={(event) => setAssessmentId(event.target.value)} />
+          </label>
+          <button type="submit" disabled={busy || !assessmentId}>
+            {busy ? "Working" : "Read it back"}
           </button>
         </fieldset>
       </form>
