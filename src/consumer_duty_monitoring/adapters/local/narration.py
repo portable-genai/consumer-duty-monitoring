@@ -13,11 +13,19 @@ is not so strict it rejects a correct narration.
 
 from __future__ import annotations
 
+from hex_service_kit import provenance
+
 from ...config import Settings
 from ...domain.models import Narration
 from ...ports.narration import NarrationBrief
 
 _MODEL = "offline-deterministic"
+
+#: What this stub answers as on the console's model pill. It is exactly what
+#: ``Settings.generator_model`` reports under ``local``, so the pill does not change name between
+#: "configured" and "answered", only state. (``_MODEL`` above is the narration record's own label,
+#: shared with the domain's deterministic fallback.)
+STUB_MODEL = "deterministic-offline-stub"
 
 
 class LocalNarrator:
@@ -40,6 +48,7 @@ class LocalNarrator:
         sentences.append(
             f"{brief.breach_count} breach(es) and {brief.gap_count} unconfigured gap(s)."
         )
+        provenance.note_model(STUB_MODEL)
         return Narration(
             headline=f"{verdict}: {brief.tenant}",
             body=" ".join(sentences),

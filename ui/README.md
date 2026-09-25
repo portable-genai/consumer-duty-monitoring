@@ -156,7 +156,9 @@ assertion, and this UI discards those.
 | `lib/env-setting.mjs` | The three-state environment read, the JavaScript twin of the commons' `read_env_setting`. The only module that touches `env[name]`. |
 | `lib/embed-policy.mjs` | Framing, CORS and header-stripping policy. Pure, no framework, covered by `npm test`. |
 | `lib/server/identity.ts` | The only place an actor is decided. Never reads a browser-supplied value except the validated dev persona. |
-| `app/api/agent/[...path]/route.ts` | The same-origin reverse proxy: strip, resolve, forward, answer. |
+| `app/api/agent/[...path]/route.ts` | The same-origin reverse proxy: strip, resolve, forward, answer. It forwards the service's `X-Answered-By` / `X-Search-Used` headers, and no other upstream header but the content type. |
+| `app/ModelPills.tsx` | The two pills at the top right of every page: the model that answered the last request (the configured `generator_model` from `/healthz`, dimmed, until one has), and `Search` when that answer used an online search tool. |
+| `lib/answer-provenance.mjs` | The one `window.fetch` wrapper the pills read those headers through, so no call site reports its own model. Pure, covered by `npm test`. |
 | `proxy.ts` | The document-layer header baseline on every response. |
 | `app/page.tsx` | The console itself. It runs `POST /v1/assess` for the persona's own tenant with an empty body (the tenant comes from identity, never from the form) and reads a stored assessment back with `GET /v1/assessments/{assessment_id}`, where a persona from another tenant gets 403. It reads the service's agent card for its own title, so no product name is hardcoded here. `tests/unit/test_console_matches_api.py` holds every call against the API's route table. |
 | `tests/` | Node tests for the policy modules, plus the scanner that fails the build on a two-state environment read anywhere in `ui/`. No browser engine, so they run anywhere. |
