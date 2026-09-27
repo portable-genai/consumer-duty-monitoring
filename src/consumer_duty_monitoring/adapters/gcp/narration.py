@@ -2,8 +2,9 @@
 
 Drafts the board narrative from the already-decided brief. It produces no number and no verdict:
 the brief carries the closed figure and citation sets, and ``domain/narration.py`` discards a draft
-that steps outside them. The Vertex import is lazy, so the offline profiles import this module with
-no SDK present; offline it refuses at call time.
+that steps outside them. It sends ``brief.prompt`` exactly as given and never builds its own: that
+is the text the guardrail's INPUT screen allowed (rule R1). The Vertex import is lazy, so the
+offline profiles import this module with no SDK present; offline it refuses at call time.
 """
 
 from __future__ import annotations

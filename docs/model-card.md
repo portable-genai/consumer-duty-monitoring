@@ -55,8 +55,10 @@ assessment emitted. Both are proved able to go red in `tests/unit/test_eval_metr
 ## Before a real narrator is bound (TODO, repo owner)
 
 - **Implement `GeminiNarrator.narrate` and integration-test it.** Today it raises, so the request
-  shape, the brief-to-prompt mapping and the response-to-`Narration` mapping have never been
-  exercised. Add a test under `tests/integration/`, then remove
+  shape and the response-to-`Narration` mapping have never been exercised. It must send
+  `brief.prompt` exactly as given: that is the prompt `domain/narration.py` `narration_prompt`
+  renders and the guardrail's INPUT screen allowed (rule R1, `docs/runbook.md`), and the
+  returned headline and body are screened OUTPUT before the grounding gate sees them. Add a test under `tests/integration/`, then remove
   `narration.GeminiNarrator.narrate` from `INCOMPLETE_MANAGED_OPERATIONS` and flip
   `managed_profile_implemented` in `infra/terraform/managed_readiness.tf`, in the same reviewed
   commit.
@@ -74,11 +76,6 @@ assessment emitted. Both are proved able to go red in `tests/unit/test_eval_metr
 - **Evaluation of the live model**: add a managed-profile run, registered with the `model-quality-gate` promotion
   gate (P-08, rule R5), that scores `narration_groundedness` against the same golden set with the
   real model bound. The offline score measures the gate, not a model.
-- **Prompt-injection screening** (rule R1): the `agent-guardrail-gateway` is not bound. The brief is
-  already narrow (counts, verdicts and instrument ids only), which is the strongest single
-  defence here, but any future change that widened it to carry verbatim complaint text would make
-  screening mandatory before `narration_brief` is built, failing closed to deterministic-only
-  when the screen is unavailable.
 - **Reasoning trace**: `COMPLIANCE.md` P-07 records that a model's reasoning trace should be
   audited alongside its output. Today the audit record carries the assessment and its citations,
   and there is no prompt and reply pair to record because there is no model call.

@@ -173,9 +173,11 @@ already thin clients to them:
 - `agent-registry`: this agent publishes its A2A card at
   `/.well-known/agent-card.json`; register it rather than inventing a discovery mechanism.
 
-The guardrail gateway (`agent-guardrail-gateway`) is **not** integrated today. It becomes mandatory the moment
-untrusted free text (a verbatim complaint narrative, say) reaches a model: see rule R1 in
-[`../COMPLIANCE.md`](../COMPLIANCE.md). The enterprise knowledge base (`enterprise-knowledge-base`) is likewise
+The guardrail gateway (`agent-guardrail-gateway`) is integrated through its Model Armor half:
+`GuardrailPort` screens the narration call in both directions (`adapters/gcp/guardrail.py`, a
+regional template from `infra/terraform/model_armor.tf`), and a refusal falls back to the
+deterministic narration after an audited `BLOCKED` record. See rule R1 in
+[`../COMPLIANCE.md`](../COMPLIANCE.md) and the guardrail section of [`runbook.md`](runbook.md). The enterprise knowledge base (`enterprise-knowledge-base`) is likewise
 unwired, because nothing here retrieves.
 
 ## 6. Adoption checklist

@@ -775,6 +775,12 @@ def _exit_narration(container: Any) -> Any:
     return container.narration.narrate(narration_brief(_demo_assessment()))
 
 
+def _exit_guardrail(container: Any) -> Any:
+    from consumer_duty_monitoring.domain.kernel import Direction
+
+    return container.guardrail.screen("routine narration text", Direction.INPUT)
+
+
 def _exit_signals(container: Any) -> Any:
     return container.signal_source.load(TENANT)
 
@@ -813,6 +819,7 @@ EXIT_CALLS: dict[str, Callable[[Any], Any]] = {
     "tracer": _exit_tracer,
     "evaluation": _exit_evaluation,
     "narration": _exit_narration,
+    "guardrail": _exit_guardrail,
     "signal_source": _exit_signals,
     "product_governance": _exit_products,
     "consent": _exit_consent,
