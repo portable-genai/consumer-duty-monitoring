@@ -60,6 +60,7 @@ def _assess() -> tuple[_RecordingTracer, OutcomeAssessment]:
         narrator=container.narration,
         warehouse=container.warehouse,
         tracer=tracer,  # type: ignore[arg-type]
+        guardrail=container.guardrail,
     )
     assessment = service.assess(
         sample_cases.TENANT_ID,

@@ -19,12 +19,15 @@ startup and Terraform serving authorization until its live integration test exis
 - `domain/` : pure stdlib, no cloud/framework imports. `kernel.py` (vertical-neutral types,
   `StrEnum` taxonomies from the commons), `models.py` (the triage artifacts), `pii.py` (the
   jurisdiction pattern selection + order), `triage_service.py` (the deterministic engine).
-- `ports/` : `@runtime_checkable` Protocols (`AuditSinkPort`, `ReviewRouterPort`; identity uses
-  the commons `IdentityPort`), re-exported once with the `PORT_PROTOCOLS` map. `identity.py` adds
-  this service's own identity vocabulary: what an adapter DECLARES about the end-user
-  authentication it provides (`VERIFIED` / `CLIENT_ASSERTED` / `UNIMPLEMENTED`), which is what the
-  loopback exposure guard reads, plus the refusal type that carries a status and a reason when no
-  end user can be authenticated at all.
+- `ports/` : `@runtime_checkable` Protocols (`AuditSinkPort`, `GuardrailPort`, `ReviewRouterPort`;
+  identity uses the commons `IdentityPort`), re-exported once with the `PORT_PROTOCOLS` map.
+  `guardrail.py` screens the narration call INPUT (the tenant, then the whole prompt) before any
+  model is called and OUTPUT (headline and body) before a draft may replace the deterministic
+  fallback (rule R1); `identity.py` adds this service's own
+  identity vocabulary: what an adapter DECLARES about the end-user authentication it provides
+  (`VERIFIED` / `CLIENT_ASSERTED` / `UNIMPLEMENTED`), which is what the loopback exposure guard
+  reads, plus the refusal type that carries a status and a reason when no end user can be
+  authenticated at all.
 - `adapters/{local,gcp,onprem}/` : one adapter per port per profile. GCP imports are lazy.
   `adapters/_review_payload.py` is the shared, redacted conversion to the review kit's wire shape.
 - `config.py` : `Settings` + `Container` (lazy DI, dotted `module:Class` bindings loaded from
@@ -68,6 +71,7 @@ depends on a later job that may not exist.
 | Port | local | gcp | onprem |
 |---|---|---|---|
 | `AuditSinkPort` | hash-chained SQLite WORM (commons) | Cloud Logging WORM (lazy) | placeholder |
+| `GuardrailPort` | heuristic prompt-injection screen | regional Model Armor template (lazy) | placeholder |
 | `IdentityPort` | seeded personas (commons) | IAP assertion (lazy) | placeholder |
 | `ReviewRouterPort` | review-kit outbox (offline, inspectable) | `human-review-console` service intake over S2S | placeholder |
 

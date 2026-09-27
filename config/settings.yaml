@@ -46,6 +46,18 @@ iap_audience: ${CONSUMERDUTY_IAP_AUDIENCE:-}
 # deliberately distinct from this service's own inbound CONSUMERDUTY_S2S_TOKEN.
 review_url: ${HUMAN_REVIEW_URL:-}
 
+# Rule R1: the Model Armor template the `gcp` guardrail adapter screens every generation call's
+# input and output through, and the regional host it calls (never the global endpoint, P-05).
+# `template_id` matches the template `infra/terraform/model_armor.tf` creates, so a zero-edit
+# boot names a template its own Terraform provisions. Guardrail on (CONSUMERDUTY_GUARDRAIL,
+# unset means on) under the managed profile REFUSES TO BOOT when template_id is empty and the
+# bound adapter is ModelArmorGuardrailAdapter; CONSUMERDUTY_GUARDRAIL=off states the guardrail off.
+model_armor:
+  template_id: ${CONSUMERDUTY_MODEL_ARMOR_TEMPLATE:-consumer-duty-monitoring-guardrail}
+  host: ${CONSUMERDUTY_MODEL_ARMOR_HOST:-modelarmor.asia-southeast1.rep.googleapis.com}
+  # The deadline on every sanitize call. A timeout fails CLOSED (audited, then refused).
+  timeout_seconds: 10.0
+
 # The outcome-test pack: the firm's Consumer Duty thresholds, as YAML a compliance officer can
 # diff. Empty selects the shipped synthetic reference pack (rulepacks/consumer_duty.yaml).
 outcome_pack_path: ${CONSUMERDUTY_OUTCOME_PACK:-}
@@ -82,6 +94,12 @@ adapters:
     local: consumer_duty_monitoring.adapters.local.consent:LocalConsentLookup
     gcp: consumer_duty_monitoring.adapters.gcp.consent:ConsentStoreLookup
     onprem: consumer_duty_monitoring.adapters.onprem.consent:OnPremConsentLookup
+  # Rule R1: screens every generation call's input (before) and output (after). local is a
+  # deterministic heuristic stand-in; there is no offline emulator for Model Armor.
+  guardrail:
+    local: consumer_duty_monitoring.adapters.local.guardrail:LocalHeuristicGuardrailAdapter
+    gcp: consumer_duty_monitoring.adapters.gcp.guardrail:ModelArmorGuardrailAdapter
+    onprem: consumer_duty_monitoring.adapters.onprem.guardrail:OnPremGuardrailAdapter
   identity:
     local: consumer_duty_monitoring.adapters.local.identity:LocalIdentityAdapter
     gcp: consumer_duty_monitoring.adapters.gcp.identity:IapIdentityAdapter

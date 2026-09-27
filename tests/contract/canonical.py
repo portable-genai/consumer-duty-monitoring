@@ -32,6 +32,7 @@ from consumer_duty_monitoring.domain.kernel import (
     AuditEvent,
     Citation,
     Decision,
+    Direction,
     Severity,
 )
 from consumer_duty_monitoring.domain.models import (
@@ -119,6 +120,20 @@ def _consent_answered(_adapter: Any, result: Any) -> bool:
     return isinstance(result, ConsentDecision) and bool(result.id)
 
 
+#: Benign canonical text: it must not match the local heuristic's injection/jailbreak patterns,
+#: so the offline family's "answers" claim is proved on the same request every family gets.
+_CANONICAL_SCREEN_TEXT = "routine consumer duty narration, nothing adversarial here"
+
+
+def _guardrail_invoke(adapter: Any) -> Any:
+    return adapter.screen(_CANONICAL_SCREEN_TEXT, Direction.INPUT)
+
+
+def _guardrail_answered(_adapter: Any, result: Any) -> bool:
+    allowed = bool(getattr(result, "allowed", False))
+    return allowed and result.sanitized_text == _CANONICAL_SCREEN_TEXT
+
+
 def _narration_invoke(adapter: Any) -> Any:
     return adapter.narrate(sample_cases.CANONICAL_BRIEF)
 
@@ -182,6 +197,13 @@ CANONICAL_CALLS: dict[str, PortCase] = {
         # No consent_url offline, so the managed lookup refuses before any network call.
         managed_refusal=(RuntimeError,),
         detail="return a cited consent decision, fail-closed",
+    ),
+    "guardrail": PortCase(
+        invoke=_guardrail_invoke,
+        answered=_guardrail_answered,
+        # The lazy `google.cloud.modelarmor` import is the first thing the managed adapter does.
+        managed_refusal=(ImportError,),
+        detail="screen one canonical prompt and allow it unchanged",
     ),
     "identity": PortCase(
         invoke=_identity_invoke,

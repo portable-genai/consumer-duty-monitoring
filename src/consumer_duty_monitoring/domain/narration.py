@@ -74,6 +74,29 @@ def narration_brief(assessment: OutcomeAssessment) -> NarrationBrief:
     )
 
 
+def narration_prompt(brief: NarrationBrief) -> str:
+    """The prompt a model-backed narrator sends: every field of the brief, rendered as sent.
+
+    This is the string the guardrail's INPUT screen reads whole (rule R1), so it carries
+    everything a model would see, the closed figure and citation sets included, in a stable
+    order so the same brief always renders the same prompt.
+    """
+    lines = [
+        "Restate this already-decided Consumer Duty assessment for a board reader. Add no "
+        "number and no citation that is not listed below.",
+        f"Assessment: {brief.assessment_id}",
+        f"Tenant: {brief.tenant}",
+        f"Overall: {brief.overall}",
+        f"Severity: {brief.severity}",
+        f"Breaches: {brief.breach_count}; gaps: {brief.gap_count}; products: "
+        f"{brief.product_count}; signals: {brief.signal_count}",
+        "Themes: " + ("; ".join(brief.theme_titles) or "none"),
+        "Allowed figures: " + ", ".join(sorted(brief.allowed_figures)),
+        "Allowed citations: " + ", ".join(sorted(brief.allowed_source_ids)),
+    ]
+    return "\n".join(lines)
+
+
 def deterministic_narration(assessment: OutcomeAssessment) -> Narration:
     """Compose a grounded board narrative from the assessment, with no model and no network."""
     verdict = assessment.overall.value.replace("_", " ")

@@ -153,6 +153,31 @@ not fail the request: the response carries `review_routing: "failed"` and an emp
 the failure is logged, and the console says the assessment is not queued for review. Terraform
 states the switch as `review_routing_enabled`.
 
+### Guardrail (rule R1)
+
+`ports/guardrail.py` screens the one generation call this service makes, the narration draft
+(`domain/assessment_service.py`). INPUT, before any model is called: the caller-supplied tenant on
+its own, then the whole prompt the narrator sends, which the narrator then receives exactly as
+screened. OUTPUT: the returned headline and body, before either may replace the deterministic
+fallback. Under `gcp` it calls a regional Model Armor template (`config/settings.yaml`
+`model_armor.template_id`, on the regional host `model_armor.host`, never the global endpoint,
+with a `model_armor.timeout_seconds` deadline on every call); `infra/terraform/model_armor.tf`
+creates that template, gated on `var.model_armor_full_capabilities` for the malicious-URI filter
+and multi-language detection, which not every region serves.
+
+The Model Armor adapter fails CLOSED: it allows only a screen that reports `NO_MATCH_FOUND` with
+`invocation_result` `SUCCESS` (every filter ran). A match, a screen where some filters were
+skipped (text past a filter's token limit, an unsupported language), an empty result, an API
+error and the deadline all refuse. Narration is optional and never consequential, so a refusal
+never blocks the assessment and never keeps a partial draft: it is audited `Decision.BLOCKED`
+(direction and reason, never the refused text) and the deterministic narration stands.
+
+`CONSUMERDUTY_GUARDRAIL` switches the guardrail, read in the same three states as review
+routing: unset is on, `true`/`false` (or `on`/`off`) wins, and an emptied or unrecognised value
+refuses at boot. Off binds `DisabledGuardrail`, which allows everything unchanged, and logs one
+warning at startup. With the guardrail on and no Model Armor template configured, the managed
+profile REFUSES TO BOOT. Terraform states the switch as `guardrail_enabled`.
+
 ## Supply chain
 Installs come from the committed lockfiles. After changing a dependency run `make lock` and commit
 both files, then `make audit` (`pip-audit` over both locks). CI runs the same audit as a hard

@@ -405,6 +405,7 @@ _REBOUND_PORTS: tuple[tuple[str, str, str], ...] = (
     ("assessment_store", "LocalAssessmentStore", "OnPremAssessmentStore"),
     ("audit", "LocalAuditAdapter", "OnPremAuditAdapter"),
     ("consent", "LocalConsentLookup", "OnPremConsentLookup"),
+    ("guardrail", "LocalHeuristicGuardrailAdapter", "OnPremGuardrailAdapter"),
     ("identity", "LocalIdentityAdapter", "OnPremIdentityAdapter"),
     ("narration", "LocalNarrator", "OnPremNarrator"),
     ("product_governance", "LocalProductGovernance", "OnPremProductGovernance"),

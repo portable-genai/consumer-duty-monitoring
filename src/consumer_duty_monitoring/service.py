@@ -37,6 +37,7 @@ def build_service(
         narrator=container.narration,
         warehouse=container.warehouse,
         tracer=container.tracer,
+        guardrail=container.guardrail,
     )
 
 

@@ -35,6 +35,11 @@ class NarrationBrief:
     ``allowed_figures`` is the closed set of numeric strings the draft may contain, and
     ``allowed_source_ids`` the closed set of instrument ids it may cite. They are carried in the
     brief rather than inferred afterwards so the prompt and the validator agree by construction.
+
+    ``prompt`` is the text a model-backed narrator sends, EXACTLY as given: the domain renders
+    it from the other fields (``domain.narration.narration_prompt``), screens it INPUT through
+    the guardrail (rule R1), and sets it here only once the screen allowed it. A narrator that
+    builds its own prompt from the fields instead would send text no screen has seen whole.
     """
 
     assessment_id: str
@@ -48,6 +53,7 @@ class NarrationBrief:
     theme_titles: tuple[str, ...] = ()
     allowed_figures: frozenset[str] = field(default_factory=frozenset)
     allowed_source_ids: frozenset[str] = field(default_factory=frozenset)
+    prompt: str = ""
 
 
 @runtime_checkable

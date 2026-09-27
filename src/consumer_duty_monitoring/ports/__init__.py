@@ -17,6 +17,7 @@ from hex_service_kit.identity import IdentityPort
 from .assessment_store import AssessmentStorePort
 from .audit import AuditSinkPort
 from .consent import ConsentLookupPort
+from .guardrail import GuardrailPort
 from .identity import (
     CLIENT_ASSERTED,
     END_USER_AUTH_ATTR,
@@ -42,6 +43,7 @@ PORT_PROTOCOLS: dict[str, type] = {
     "assessment_store": AssessmentStorePort,
     "audit": AuditSinkPort,
     "consent": ConsentLookupPort,
+    "guardrail": GuardrailPort,
     "identity": IdentityPort,
     "narration": NarrationPort,
     "product_governance": ProductGovernancePort,
@@ -66,6 +68,7 @@ __all__ = [
     "AuditSinkPort",
     "ConsentLookupPort",
     "EndUserAuthUnavailableError",
+    "GuardrailPort",
     "IdentityPort",
     "NarrationBrief",
     "NarrationPort",
