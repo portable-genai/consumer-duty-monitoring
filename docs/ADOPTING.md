@@ -168,8 +168,8 @@ already thin clients to them:
 - `model-quality-gate` AI-quality / model-risk gate: owns promotion. `eval/run_eval.py --mode gate` is the
   client half (`CONSUMERDUTY_QUALITY_URL`) and refuses to run off the managed profile.
 - `agent-observability` plus immutable WORM audit: audit events and trace spans go to it via
-  `AuditSinkPort` and `ObservabilityTracerPort` (`OTEL_EXPORTER_OTLP_ENDPOINT` selects the `agent-observability`
-  collector over direct Cloud Trace).
+  `AuditSinkPort` and `ObservabilityTracerPort` (`OTEL_EXPORTER_OTLP_ENDPOINT` names the
+  `agent-observability` collector, which is required: there is no direct Cloud Trace path).
 - `agent-registry`: this agent publishes its A2A card at
   `/.well-known/agent-card.json`; register it rather than inventing a discovery mechanism.
 
